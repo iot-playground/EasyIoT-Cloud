@@ -20,8 +20,8 @@
 #define AP_SSID     "xxxxx"
 #define AP_PASSWORD "xxxxx"
 
-// EasyIoT Cloud definitions - change EIOT_CLOUD_PROFILE_PARAM_ID
-#define EIOT_CLOUD_PROFILE_PARAM_ID    "xxxxx"
+// EasyIoT Cloud definitions - change EIOT_CLOUD_INSTANCE_PARAM_ID
+#define EIOT_CLOUD_INSTANCE_PARAM_ID    "xxxxx"
 #define REPORT_INTERVAL 60 // in sec
 
 
@@ -92,8 +92,8 @@ void sendTeperature(float temp)
   }
 
   String url = "";
-  // URL: "/RestApi/SetParameter/[profile id]/[parameter id]/[value]
-  url += "/RestApi/SetParameter/"+ String(EIOT_CLOUD_PROFILE_PARAM_ID) + "/"+String(temp); // generate EasIoT cloud update parameter URL
+  // URL: /RestApi/SetParameter/[instance id]/[parameter id]/[value]
+  url += "/RestApi/SetParameter/"+ String(EIOT_CLOUD_INSTANCE_PARAM_ID) + "/"+String(temp); // generate EasIoT cloud update parameter URL
 
   Serial.print("POST data to URL: ");
   Serial.println(url);
