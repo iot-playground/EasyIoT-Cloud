@@ -5,6 +5,11 @@ An Arduino library for reading the DHT family of temperature and humidity sensor
 
 Written by Mark Ruys, <mark@paracas.nl>.
 
+Update: Igor Jarc
+This library is ported to Arduino ESP8266 IDE.
+http://iot-playground.com/2-uncategorised/70-esp8266-wifi-dht22-humidity-sensor-easyiot-cloud-rest-api
+https://github.com/iot-playground/EasyIoT-Cloud
+
 Features
 --------
   - Support for DHT11 and DHT22, AM2302, RHT03
