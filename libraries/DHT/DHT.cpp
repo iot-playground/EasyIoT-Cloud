@@ -128,8 +128,6 @@ uint32_t DHT::detectState(bool state)
 
 void DHT::readSensor()
 {
-	//Serial.println(microsecondsToClockCycles(1000));
-	
   // Make sure we don't poll the sensor too often
   // - Max sample rate DHT11 is 1 Hz   (duty cicle 1000 ms)
   // - Max sample rate DHT22 is 0.5 Hz (duty cicle 2000 ms)
@@ -197,7 +195,6 @@ void DHT::readSensor()
 	
 	if ((lowCnt == 0) || (highCnt == 0))
 	{
-		Serial.println("t3");
 		error = ERROR_TIMEOUT;
 		return;		
 	}
