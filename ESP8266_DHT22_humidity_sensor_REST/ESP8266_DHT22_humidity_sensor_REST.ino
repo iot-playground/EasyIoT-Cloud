@@ -4,13 +4,13 @@
  Please use community fourum on website do not contact author directly
  
  External libraries:
+ DTH - https://github.com/iot-playground/EasyIoT-Cloud/tree/master/libraries/DHT
  
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
  version 2 as published by the Free Software Foundation.
  */
 #include <ESP8266WiFi.h>
-#include <OneWire.h>
 #include "DHT.h"
 
 //AP definitions - update this
@@ -28,8 +28,7 @@
 
 
 
-#define ONE_WIRE_BUS 2  // DS18B20 pin
-OneWire oneWire(ONE_WIRE_BUS);
+#define DHT22_PIN 2  // DHT22 pin
 
 
 float oldTemp;
@@ -46,7 +45,7 @@ void setup() {
   Serial.println();
   Serial.println("Status\tHumidity (%)\tTemperature (C)\t(F)");
 
-  dht.setup(2); // data pin 2
+  dht.setup(DHT22_PIN); // data pin 2
   
   oldTemp = -1;
   oldHum = -1;
