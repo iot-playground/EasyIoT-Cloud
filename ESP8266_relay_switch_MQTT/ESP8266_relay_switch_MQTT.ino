@@ -2,13 +2,14 @@
 #include <MQTT.h>
 #include <EEPROM.h>
 
-//#define DEBUG
+#define DEBUG
 
-#define AP_SSID     "xxx"
-#define AP_PASSWORD "xxx"  
+#define AP_SSID     "JAI"
+#define AP_PASSWORD "danesjelepdan"  
 
-#define EIOTCLOUD_USERNAME "xxx"
-#define EIOTCLOUD_PASSWORD "xxx"
+
+#define EIOTCLOUD_USERNAME "igorj"
+#define EIOTCLOUD_PASSWORD "ravnikova8"
 
 // create MQTT object
 #define EIOT_CLOUD_ADDRESS "cloud.iot-playground.com"
@@ -240,6 +241,7 @@ void myConnectedCb() {
 #ifdef DEBUG
   Serial.println("connected to MQTT server");
 #endif
+  myMqtt.subscribe("/Db/" + instanceId + "/" + String(storage.moduleId) + "/Sensor.Parameter1");
 }
 
 void myDisconnectedCb() {
