@@ -11,7 +11,8 @@
  Changelog
  ----------------
  10.02.2016 - first version
-
+ 04.03.2016 - added SetParameterValues
+ 
  */
 #ifndef EIoTCloudRestApi_h
 #define EIoTCloudRestApi_h
@@ -77,6 +78,8 @@ class EIoTCloudRestApi
 		bool SetParameterValue(String parameterId, String value);
 		String GetParameterValue(String parameterId);
 
+		bool SetParameterValues(String values);
+		
 private:
 	String parseId(WiFiClient* client);
 	bool parseResponse(WiFiClient* client);

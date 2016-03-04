@@ -567,6 +567,36 @@ String EIoTCloudRestApi::parseParameter(WiFiClient* client, String property)
 }
 
 
+bool EIoTCloudRestApi::SetParameterValues(String values)
+{
+	WiFiClient client;
+   
+	while(!client.connect(EIOT_CLOUD_ADDRESS, EIOT_CLOUD_PORT)) {
+		debug("connection failed");
+		wifiConnect(); 
+	}
+
+	String url = "POST /RestApi/v1.0/Parameter/Values";
+	debug("\r\n");
+#ifdef DEBUG  
+	char buff[300];
+	url.toCharArray(buff, 300);
+	debug(buff);
+#endif
+	debug("\r\n");
+
+	client.print(String(url+" HTTP/1.1\r\n") +
+               "Host: " + String(EIOT_CLOUD_ADDRESS) + "\r\n" + 
+               "EIOT-AuthToken: "+String(_token) + "\r\n" + 
+			   "Connection: close\r\n" + 
+			    "Content-Length: " + values.length() +
+			    "\n\n" +
+			    values + 
+               "\r\n");
+
+	return parseResponse(&client);
+}
+
 
 
 bool EIoTCloudRestApi::setParameterProperty(String parameterId, String property, String value)
