@@ -2,7 +2,7 @@
 #include <MQTT.h>
 #include <EEPROM.h>
 
-#define DEBUG
+//#define DEBUG
 
 #define AP_SSID     "Geek"
 #define AP_PASSWORD "G33k"  
