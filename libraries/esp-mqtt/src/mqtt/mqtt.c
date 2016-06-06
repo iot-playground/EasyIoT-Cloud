@@ -51,9 +51,9 @@
 #endif
 
 unsigned char *default_certificate;
-unsigned int default_certificate_len = 0;
+//unsigned int default_certificate_len = 0;
 unsigned char *default_private_key;
-unsigned int default_private_key_len = 0;
+//unsigned int default_private_key_len = 0;
 
 os_event_t mqtt_procTaskQueue[MQTT_TASK_QUEUE_SIZE];
 
