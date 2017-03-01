@@ -742,6 +742,7 @@ bool EIoTCloudRestApi::parseResponse(WiFiClient* client)
 void EIoTCloudRestApi::wifiConnect()
 {
   debug("Connecting to AP");
+  WiFi.mode(WIFI_STA);
   WiFi.begin(_ssid, _password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
