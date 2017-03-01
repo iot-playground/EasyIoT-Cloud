@@ -15,10 +15,10 @@
 EIoTCloudRestApi eiotcloud;
 
 // change those lines
-#define AP_USERNAME "JAI"
-#define AP_PASSWORD "danesjelepdan"
+#define AP_USERNAME "xxx"
+#define AP_PASSWORD "xxx"
 
-#define TOKEN "COZq2snyULULjjQsBpoiywABdkNx4EtOAdA2COus"
+#define TOKEN "xxx"
 
 #define REPORT_INTERVAL 1
 
