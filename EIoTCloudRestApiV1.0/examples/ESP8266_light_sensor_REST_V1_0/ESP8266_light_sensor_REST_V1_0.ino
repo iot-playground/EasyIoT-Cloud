@@ -23,7 +23,7 @@ EIoTCloudRestApi eiotcloud;
 #define REPORT_INTERVAL 1
 
 #define CONFIG_START 0
-#define CONFIG_VERSION "v02"
+#define CONFIG_VERSION "v01"
 
 
 #define MIN_VALUE 25
