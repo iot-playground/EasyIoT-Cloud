@@ -11,8 +11,6 @@
 #include <ESP8266WiFi.h>
 #include "EIoTCloudRestApiV1.0.h"
 #include <EEPROM.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
 
 #define DEBUG_PROG 
 
@@ -24,81 +22,68 @@
   #define DEBUG_PRINT(x)
 #endif
 
-
 EIoTCloudRestApi eiotcloud;
 
 // change those lines
-#define AP_USERNAME "xxxx"
-#define AP_PASSWORD "xxxx"
-#define INSTANCE_ID "xxxx"
+#define AP_USERNAME "xxx"
+#define AP_PASSWORD "xxx"
 
-
-
-#define REPORT_INTERVAL 1
-
-#define ONE_WIRE_BUS 2  // DS18B20 pin
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature DS18B20(&oneWire);
-
+#define TOKEN "xxx"
 
 #define CONFIG_START 0
 #define CONFIG_VERSION "v01"
+
+
+#define INPUT_PIN        D5
 
 struct StoreStruct {
   // This is for mere detection if they are your settings
   char version[4];
   // The variables of your settings
-  char token[41];
   uint moduleId;
-  //bool tokenOk; // valid token  
 } storage = {
   CONFIG_VERSION,
-  // token
-  "1234567890123456789012345678901234567890",
   // The default module 0 - invalid module
   0,
-  //0 // not valid
 };
 
 String moduleId = "";
 String parameterId = "";
-float tempOld = 0;
+bool oldInputState;
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     DEBUG_PRINTLN("Start...");
 
     EEPROM.begin(512);
     loadConfig();
 
     eiotcloud.begin(AP_USERNAME, AP_PASSWORD);
+    eiotcloud.SetToken(TOKEN);
 
     // if first time get new token and register new module
     // here hapend Plug and play logic to add module to Cloud
     if (storage.moduleId == 0)
-    {
-      // get new token - alternarive is to manually create token and store it in EEPROM
-      String token = eiotcloud.TokenNew(INSTANCE_ID);
-      DEBUG_PRINT("Token: ");
-      DEBUG_PRINTLN(token);
-      eiotcloud.SetToken(token);
-
-      // remember token
-      token.toCharArray(storage.token, 41);
-
+    {      
       // add new module and configure it
       moduleId = eiotcloud.ModuleNew();
       DEBUG_PRINT("ModuleId: ");
       DEBUG_PRINTLN(moduleId);
       storage.moduleId = moduleId.toInt();
-
+      
+      // stop if module ID is not valid
+      if (storage.moduleId == 0)
+      {
+        DEBUG_PRINTLN("Check Account limits -> module limit.");
+        while(true) delay(1);
+      }
       // set module type
-      bool modtyperet = eiotcloud.SetModulType(moduleId, "MT_GENERIC");
+      bool modtyperet = eiotcloud.SetModulType(moduleId, "MT_DIGITAL_INPUT");
       DEBUG_PRINT("SetModulType: ");
       DEBUG_PRINTLN(modtyperet);
       
       // set module name
-      bool modname = eiotcloud.SetModulName(moduleId, "Room temperature");
+      bool modname = eiotcloud.SetModulName(moduleId, "Door/window sensor");
       DEBUG_PRINT("SetModulName: ");
       DEBUG_PRINTLN(modname);
 
@@ -108,35 +93,57 @@ void setup() {
       DEBUG_PRINTLN(parameterImgId);
 
       // set module image
-      bool valueRet1 = eiotcloud.SetParameterValue(parameterImgId, "temperature.png");
+      bool valueRet1 = eiotcloud.SetParameterValue(parameterImgId, "door_1.png");
       DEBUG_PRINT("SetParameterValue: ");
       DEBUG_PRINTLN(valueRet1);
+
+
+      // add image settings parameter
+      String parameterImgId2 = eiotcloud.NewModuleParameter(moduleId, "Settings.Icon2");
+      DEBUG_PRINT("parameterImgId2: ");
+      DEBUG_PRINTLN(parameterImgId2);
+
+      // set module image
+      bool valueRet3 = eiotcloud.SetParameterValue(parameterImgId2, "door_2.png");
+      DEBUG_PRINT("SetParameterValue: ");
+      DEBUG_PRINTLN(valueRet3);
+
       
-      // now add parameter to display temperature
+      // now add parameter to value
       parameterId = eiotcloud.NewModuleParameter(moduleId, "Sensor.Parameter1");
       DEBUG_PRINT("ParameterId: ");
       DEBUG_PRINTLN(parameterId);
-
-      //set parameter description
-      bool valueRet2 = eiotcloud.SetParameterDescription(parameterId, "Temperature");
-      DEBUG_PRINT("SetParameterDescription: ");
-      DEBUG_PRINTLN(valueRet2);
-      
-      //set unit
-      // see http://meyerweb.com/eric/tools/dencoder/ how to encode °C 
-      bool valueRet3 = eiotcloud.SetParameterUnit(parameterId, "%C2%B0C");
-      DEBUG_PRINT("SetParameterUnit: ");
-      DEBUG_PRINTLN(valueRet3);
 
       //Set parameter LogToDatabase
       bool valueRet4 = eiotcloud.SetParameterLogToDatabase(parameterId, true);
       DEBUG_PRINT("SetLogToDatabase: ");
       DEBUG_PRINTLN(valueRet4);
 
-      //SetAvreageInterval
-      bool valueRet5 = eiotcloud.SetParameterAverageInterval(parameterId, "10");
-      DEBUG_PRINT("SetAvreageInterval: ");
+      //Set parameter ChartSteps
+      valueRet4 = eiotcloud.SetParameterChartSteps(parameterId, true);
+      DEBUG_PRINT("SetLogToDatabase: ");
+      DEBUG_PRINTLN(valueRet4);
+
+
+      // add status text 1 parameter
+      String parameterStatTxt1 = eiotcloud.NewModuleParameter(moduleId, "Settings.StatusText1");
+      DEBUG_PRINT("parameterStatTxt1: ");
+      DEBUG_PRINTLN(parameterStatTxt1);
+
+      // add status text 1
+      bool valueRet5 = eiotcloud.SetParameterValue(parameterStatTxt1, "Open");
+      DEBUG_PRINT("SetParameterValue: ");
       DEBUG_PRINTLN(valueRet5);
+
+      // add status text 2 parameter
+      String parameterStatTxt2 = eiotcloud.NewModuleParameter(moduleId, "Settings.StatusText2");
+      DEBUG_PRINT("parameterStatTxt2: ");
+      DEBUG_PRINTLN(parameterStatTxt2);
+
+      // add status text 2
+      bool valueRet6 = eiotcloud.SetParameterValue(parameterStatTxt2, "Close");
+      DEBUG_PRINT("SetParameterValue: ");
+      DEBUG_PRINTLN(valueRet6);
 
       // save configuration
       saveConfig();
@@ -144,42 +151,31 @@ void setup() {
 
     // if something went wrong, wiat here
     if (storage.moduleId == 0)
-      delay(1);
+      while(true) delay(1);
 
     // read module ID from storage
     moduleId = String(storage.moduleId);
-    // read token ID from storage
-    eiotcloud.SetToken(storage.token);    
     // read Sensor.Parameter1 ID from cloud
     parameterId = eiotcloud.GetModuleParameterByName(moduleId, "Sensor.Parameter1");
     DEBUG_PRINT("parameterId: ");
     DEBUG_PRINTLN(parameterId);
-}
 
+    pinMode(INPUT_PIN, INPUT_PULLUP);
+    
+    oldInputState = !digitalRead(INPUT_PIN);
+}
 
 void loop() {
-  float temp;
-
-  do {
-    DS18B20.requestTemperatures(); 
-    temp = DS18B20.getTempCByIndex(0);
-    DEBUG_PRINT("Temperature: ");
-    DEBUG_PRINTLN(temp);
-  } while (temp == 85.0 || temp == (-127.0));
-
-
-
-  if (tempOld != temp)
+  int inputState = digitalRead(INPUT_PIN);;  
+  
+  if (inputState != oldInputState)
   {
-    // send temperature
-    bool valueRet = eiotcloud.SetParameterValue(parameterId, String(temp));
+    bool valueRet = eiotcloud.SetParameterValue(parameterId, String(inputState));
     DEBUG_PRINT("SetParameterValue: ");
     DEBUG_PRINTLN(valueRet);
-    tempOld = temp;
+    oldInputState = inputState;
   }
-  delay(1000 * 60 * REPORT_INTERVAL);
 }
-
 
 void loadConfig() {
   // To make sure there are settings, and they are YOURS!
