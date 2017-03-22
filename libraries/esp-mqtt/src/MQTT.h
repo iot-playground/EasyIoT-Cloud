@@ -8,6 +8,7 @@
  *
  *	This library is intended to be used with esp8266 modules.
  *
+ *	22.3.2017 - added EasyIoT Cloud helper functions, more http://iot-playground.com
  *
  *  This class wraps a slightly modified version of mqtt
  *	for esp8266 written by Tuan PM.
@@ -80,8 +81,33 @@ public:
 	// internal callback
 	void _onMqttDataCb(const char*, uint32_t, const char*, uint32_t);
 	
+	
+	//EasyIoT Cloud custom functions
+	uint16_t NewModule();
+	bool SetModuleType(uint16_t moduleId, const char* moduleType);
+	bool SetParameterIsCommand(uint16_t moduleId, const char* parameterName, bool isCommand);
+	bool SetParameterDescription(uint16_t moduleId, const char* parameterName, const char* description);
+	bool SetParameterUnit(uint16_t moduleId, const char* parameterName, const char* unit);
+	bool SetParameterDBLogging(uint16_t moduleId, const char* parameterName, bool dbLogging);
+	bool SetParameterChartSteps(uint16_t moduleId, const char* parameterName, bool chartSteps);
+	bool SetParameterUINotifications(uint16_t moduleId, const char* parameterName, bool uiNotifications);
+	bool SetParameterDbAvgInterval(uint16_t moduleId, const char* parameterName, uint dbAvgInterval);
+		
+	
+	void NewModuleParameter(uint16_t moduleId, const char* parameterName);
+
 private:
 	MQTT_Client mqttClient;
+	
+	bool stepOk1;
+	uint16_t _moduleId = 0;
+	String _topic;
+	String _parameterName;
+	
+	bool isNewParameterCmd;
+	
+	void waitStepOK();
+	
 	
 };
 

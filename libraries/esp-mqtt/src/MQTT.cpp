@@ -8,6 +8,7 @@
  *
  *	This library is intended to be used with esp8266 modules.
  *
+ *	22.3.2017 - added EasyIoT Cloud helper functions, more http://iot-playground.com
  *
  *  This class wraps a slightly modified version of mqtt
  *	for esp8266 written by Tuan PM.
@@ -118,6 +119,8 @@ MQTT::MQTT(const char* client_id, const char* host, uint32_t port) :
 	MQTT_OnDisconnected(&mqttClient, mqttDisconnectedCb);
 	MQTT_OnPublished(&mqttClient, mqttPublishedCb);
 	MQTT_OnData(&mqttClient, mqttDataCb);
+
+	_parameterName = String("");
 }
 
 
@@ -226,30 +229,178 @@ void MQTT::onData( void (*function)(const char*, uint32_t, const char*, uint32_t
 // internal callback, calling user CB
 void MQTT::_onMqttDataCb(const char* topic, uint32_t topic_len, const char* buf, uint32_t buf_len)
 {
+	char* topicCpy = (char*)malloc(topic_len+1);
+	memcpy(topicCpy, topic, topic_len);
+	topicCpy[topic_len] = 0;
+	// string it
+	String topicStr(topicCpy);
+	
+	char* bufCpy = (char*)malloc(buf_len+1);
+	memcpy(bufCpy, buf, buf_len);
+	bufCpy[buf_len] = 0;
+	// string it
+	String bufStr(bufCpy);
+
+	//EasyIoT Cloud
+	if (topicStr ==  String("/NewModule"))
+	{
+		_moduleId = (uint16_t)bufStr.toInt();
+		stepOk1 = true;
+		return;
+	}
+	else if (isNewParameterCmd && (topicStr == String("/"+String(_moduleId)+ _parameterName +"/NewParameter") ))
+	{
+		stepOk1 = true;
+		return;
+	}
+	
 	if (onMqttDataRawCb) {
 		onMqttDataRawCb(topic, topic_len, buf, buf_len);
 	}
 	
-	if (onMqttDataCb) {
+	if (onMqttDataCb) {		
+		// char* topicCpy = (char*)malloc(topic_len+1);
+		// memcpy(topicCpy, topic, topic_len);
+		// topicCpy[topic_len] = 0;
+		// // string it
+		// String topicStr(topicCpy);
 		
-		char* topicCpy = (char*)malloc(topic_len+1);
-		memcpy(topicCpy, topic, topic_len);
-		topicCpy[topic_len] = 0;
-		// string it
-		String topicStr(topicCpy);
-		
-		char* bufCpy = (char*)malloc(buf_len+1);
-		memcpy(bufCpy, buf, buf_len);
-		bufCpy[buf_len] = 0;
-		// string it
-		String bufStr(bufCpy);
+		// char* bufCpy = (char*)malloc(buf_len+1);
+		// memcpy(bufCpy, buf, buf_len);
+		// bufCpy[buf_len] = 0;
+		// // string it
+		// String bufStr(bufCpy);
 		
 		onMqttDataCb(topicStr, bufStr);
 		
-		free(topicCpy);
-		free(bufCpy);
+		//free(topicCpy);
+		//free(bufCpy);
 	}
+
+	free(topicCpy);
+	free(bufCpy);	
 }
+
+
+void MQTT::waitStepOK()
+{
+	while(!stepOk1)
+		delay(100);
+}
+
+uint16_t MQTT::NewModule()
+{
+	_moduleId = 0;
+	stepOk1 = false;
+	subscribe("/NewModule");	
+	waitStepOK();
+	return _moduleId;
+}
+
+bool MQTT::SetModuleType(uint16_t moduleId, const char* moduleType)	
+{
+	String valueStr1("");
+	valueStr1 = moduleType;
+	_topic  = "/" + String(moduleId) + "/ModuleType";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+bool MQTT::SetParameterIsCommand(uint16_t moduleId, const char* parameterName, bool isCommand)
+{
+	String valueStr1("");
+	valueStr1 = isCommand?"true":"false";
+	_topic  = "/" + String(moduleId) + parameterName + "/IsCommand";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+bool MQTT::SetParameterDescription(uint16_t moduleId, const char* parameterName, const char* description)
+{
+	String valueStr1("");
+	valueStr1 = description;
+	_topic  = "/" + String(moduleId) + parameterName + "/Description";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+
+bool MQTT::SetParameterUnit(uint16_t moduleId, const char* parameterName, const char* unit)
+{
+	String valueStr1("");
+	valueStr1 = unit;
+	_topic  = "/" + String(moduleId) + parameterName + "/Unit";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+
+bool MQTT::SetParameterDBLogging(uint16_t moduleId, const char* parameterName, bool dbLogging)
+{
+	String valueStr1("");
+	valueStr1 = dbLogging?"true":"false";
+	_topic  = "/" + String(moduleId) + parameterName + "/DBLogging";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+bool MQTT::SetParameterChartSteps(uint16_t moduleId, const char* parameterName, bool chartSteps)
+{
+	String valueStr1("");
+	valueStr1 = chartSteps?"true":"false";
+	_topic  = "/" + String(moduleId) + parameterName + "/ChartSteps";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+bool MQTT::SetParameterUINotifications(uint16_t moduleId, const char* parameterName, bool uiNotifications)
+{
+	String valueStr1("");
+	valueStr1 = uiNotifications?"true":"false";
+	_topic  = "/" + String(moduleId) + parameterName + "/UINotifications";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+
+bool MQTT::SetParameterDbAvgInterval(uint16_t moduleId, const char* parameterName, uint dbAvgInterval)
+{
+	String valueStr1("");
+	valueStr1 = String(dbAvgInterval);
+	_topic  = "/" + String(moduleId) + parameterName + "/DbAvgInterval";
+    bool result = publish(_topic, valueStr1);
+    delay(100);
+	return  result;
+}
+
+
+
+/*
+	add new parameter to EasyIoT Cloud
+	param:
+	-module id
+	-parameter name
+*/
+void MQTT::NewModuleParameter(uint16_t moduleId, const char* parameterName)
+{
+	_parameterName = String(parameterName);
+	_moduleId = moduleId;
+	stepOk1 = false;
+	isNewParameterCmd = true;
+	subscribe("/"+String(moduleId)+ parameterName + "/NewParameter");
+
+	waitStepOK();
+	_parameterName = String("");
+	isNewParameterCmd = false;
+}
+
 
 
 
