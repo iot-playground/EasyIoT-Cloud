@@ -205,7 +205,7 @@ void setup() {
 
     // set Description
     Serial.println("set description: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
-    myMqtt.SetParameterDescription(storage.moduleId, PARAM_HUMIDITY, "Soil hum.");
+    myMqtt.SetParameterDescription(storage.moduleId, PARAM_HUMIDITY, "Soil moist.");
 
     // set Unit
     Serial.println("set Unit: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
