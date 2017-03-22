@@ -215,10 +215,6 @@ void setup() {
     Serial.println("set Unit: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
     myMqtt.SetParameterDBLogging(storage.moduleId, PARAM_HUMIDITY, true);
 
-    // set dbAvgInterval
-    Serial.println("set Unit: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
-    myMqtt.SetParameterDbAvgInterval(storage.moduleId, PARAM_HUMIDITY, 10);
-
     // save new module id
     saveConfig();
   }
