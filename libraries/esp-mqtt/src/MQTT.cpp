@@ -394,7 +394,7 @@ void MQTT::NewModuleParameter(uint16_t moduleId, const char* parameterName)
 	_moduleId = moduleId;
 	stepOk1 = false;
 	isNewParameterCmd = true;
-	subscribe("/"+String(moduleId)+ parameterName + "/NewParameter");
+	subscribe("/"+String(moduleId)+ "/"+ parameterName + "/NewParameter");
 
 	waitStepOK();
 	_parameterName = String("");
