@@ -248,7 +248,7 @@ void MQTT::_onMqttDataCb(const char* topic, uint32_t topic_len, const char* buf,
 		stepOk1 = true;
 		return;
 	}
-	else if (isNewParameterCmd && (topicStr == String("/"+String(_moduleId)+ _parameterName +"/NewParameter") ))
+	else if (isNewParameterCmd && (topicStr == String("/"+String(_moduleId)+"/"+_parameterName +"/NewParameter") ))
 	{
 		stepOk1 = true;
 		return;
