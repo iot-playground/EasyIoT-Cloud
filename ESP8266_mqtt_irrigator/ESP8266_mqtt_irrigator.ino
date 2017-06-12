@@ -57,10 +57,10 @@ struct StoreStruct {
 
 
 
-#define PARAM_HUMIDITY_TRESHOLD   "/Sensor.Parameter1"
-#define PARAM_MANUAL_AUTO_MODE    "/Sensor.Parameter2"
-#define PARAM_PUMP_ON             "/Sensor.Parameter3"
-#define PARAM_HUMIDITY            "/Sensor.Parameter4"
+#define PARAM_HUMIDITY_TRESHOLD   "Sensor.Parameter1"
+#define PARAM_MANUAL_AUTO_MODE    "Sensor.Parameter2"
+#define PARAM_PUMP_ON             "Sensor.Parameter3"
+#define PARAM_HUMIDITY            "Sensor.Parameter4"
 
 
 #define MS_IN_SEC  1000 // 1S  
@@ -168,51 +168,51 @@ void setup() {
     myMqtt.SetModuleType(storage.moduleId, "ZMT_IRRIGATOR");
 
     // create Sensor.Parameter1 - humidity treshold value
-    Serial.println("new parameter: /"+String(storage.moduleId)+ PARAM_HUMIDITY_TRESHOLD);    
+    Serial.println("new parameter: /"+String(storage.moduleId)+ "/" +PARAM_HUMIDITY_TRESHOLD);    
     myMqtt.NewModuleParameter(storage.moduleId, PARAM_HUMIDITY_TRESHOLD);
 
     // set IsCommand
-    Serial.println("set isCommand: /"+String(storage.moduleId)+ PARAM_HUMIDITY_TRESHOLD);    
+    Serial.println("set isCommand: /"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY_TRESHOLD);    
     myMqtt.SetParameterIsCommand(storage.moduleId, PARAM_HUMIDITY_TRESHOLD, true);
 
 
     // create Sensor.Parameter2
     // Sensor.Parameter2 - manual/auto mode 0 - manual, 1 - auto mode
-    Serial.println("new parameter: /"+String(storage.moduleId)+ PARAM_MANUAL_AUTO_MODE);    
+    Serial.println("new parameter: /"+String(storage.moduleId)+ "/" + PARAM_MANUAL_AUTO_MODE);    
     myMqtt.NewModuleParameter(storage.moduleId, PARAM_MANUAL_AUTO_MODE);
 
     // set IsCommand
-    Serial.println("set isCommand: /"+String(storage.moduleId)+ PARAM_MANUAL_AUTO_MODE);    
+    Serial.println("set isCommand: /"+String(storage.moduleId)+ "/" + PARAM_MANUAL_AUTO_MODE);    
     myMqtt.SetParameterIsCommand(storage.moduleId, PARAM_MANUAL_AUTO_MODE, true);
 
     
     // create Sensor.Parameter3
     // Sensor.Parameter3 - pump on/ pump off
-    Serial.println("new parameter: /"+String(storage.moduleId)+ PARAM_PUMP_ON);    
+    Serial.println("new parameter: /"+String(storage.moduleId)+ "/" + PARAM_PUMP_ON);    
     myMqtt.NewModuleParameter(storage.moduleId, PARAM_PUMP_ON);
 
 
     // set IsCommand
-    Serial.println("set isCommand: /"+String(storage.moduleId)+ PARAM_PUMP_ON);    
+    Serial.println("set isCommand: /"+String(storage.moduleId)+ "/" + PARAM_PUMP_ON);    
     myMqtt.SetParameterIsCommand(storage.moduleId, PARAM_PUMP_ON, true);
 
 
     // create Sensor.Parameter4
     // Sensor.Parameter4 - current soil humidity
-    Serial.println("new parameter: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
+    Serial.println("new parameter: /"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY);    
     myMqtt.NewModuleParameter(storage.moduleId, PARAM_HUMIDITY);
 
 
     // set Description
-    Serial.println("set description: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
+    Serial.println("set description: /"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY);    
     myMqtt.SetParameterDescription(storage.moduleId, PARAM_HUMIDITY, "Soil moist.");
 
     // set Unit
-    Serial.println("set Unit: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
+    Serial.println("set Unit: /"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY);    
     myMqtt.SetParameterUnit(storage.moduleId, PARAM_HUMIDITY, "%");
 
     // set dbLogging
-    Serial.println("set Unit: /"+String(storage.moduleId)+ PARAM_HUMIDITY);    
+    Serial.println("set Unit: /"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY);    
     myMqtt.SetParameterDBLogging(storage.moduleId, PARAM_HUMIDITY, true);
 
     // save new module id
@@ -260,7 +260,7 @@ void loop() {
     else
       valueStr = String("0");
     
-    topic  = "/"+String(storage.moduleId)+ PARAM_MANUAL_AUTO_MODE;
+    topic  = "/"+String(storage.moduleId)+ "/" + PARAM_MANUAL_AUTO_MODE;
     result = myMqtt.publish(topic, valueStr, 0, 1);
 
     Serial.print("Publish topic: ");
@@ -275,7 +275,7 @@ void loop() {
     soilHumidityThresholdOld = soilHumidityThreshold;
     valueStr = String(soilHumidityThreshold);
     
-    topic  = "/"+String(storage.moduleId)+ PARAM_HUMIDITY_TRESHOLD;
+    topic  = "/"+String(storage.moduleId)+ "/"+ PARAM_HUMIDITY_TRESHOLD;
     result = myMqtt.publish(topic, valueStr, 0, 1);
 
     Serial.print("Publish topic: ");
@@ -316,7 +316,7 @@ void loop() {
      //esp.send(msgHum.set(soilHum)); 
      
      valueStr = String(soilHum);
-     topic  = "/"+String(storage.moduleId)+ PARAM_HUMIDITY;
+     topic  = "/"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY;
      result = myMqtt.publish(topic, valueStr, 0, 1);
 
      Serial.print("Publish topic: ");
@@ -344,7 +344,7 @@ void loop() {
        digitalWrite(PIN_PUMP, HIGH);
        //esp.send(msgMotorPump.set((uint8_t)1));       
        valueStr = String(1);
-       topic  = "/"+String(storage.moduleId)+ PARAM_PUMP_ON;
+       topic  = "/"+String(storage.moduleId)+ "/" + PARAM_PUMP_ON;
        result = myMqtt.publish(topic, valueStr, 0, 1);    
 
        Serial.print("Publish topic: ");
@@ -363,7 +363,7 @@ void loop() {
        state = s_idle;
        //esp.send(msgMotorPump.set((uint8_t)0));
        valueStr = String(0);
-       topic  = "/"+String(storage.moduleId)+ PARAM_PUMP_ON;
+       topic  = "/"+String(storage.moduleId)+ "/" + PARAM_PUMP_ON;
        result = myMqtt.publish(topic, valueStr, 0, 1);    
 
        digitalWrite(PIN_PUMP, LOW);
@@ -433,13 +433,13 @@ void subscribe()
   if (storage.moduleId != 0)
   {
     // Sensor.Parameter1 - humidity treshold value
-    myMqtt.subscribe("/"+String(storage.moduleId)+ PARAM_HUMIDITY_TRESHOLD);
+    myMqtt.subscribe("/"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY_TRESHOLD);
   
     // Sensor.Parameter2 - manual/auto mode 0 - manual, 1 - auto mode
-    myMqtt.subscribe("/"+String(storage.moduleId)+ PARAM_MANUAL_AUTO_MODE);
+    myMqtt.subscribe("/"+String(storage.moduleId)+ "/" + PARAM_MANUAL_AUTO_MODE);
   
     // Sensor.Parameter3 - pump on/ pump off
-    myMqtt.subscribe("/"+String(storage.moduleId)+ PARAM_PUMP_ON);
+    myMqtt.subscribe("/"+String(storage.moduleId)+ "/" + PARAM_PUMP_ON);
   }
 }
 
@@ -472,20 +472,20 @@ void myDataCb(String& topic, String& data) {
   Serial.print(": ");
   Serial.println(data);
 #endif
-  if (topic == String("/"+String(storage.moduleId)+ PARAM_HUMIDITY_TRESHOLD))
+  if (topic == String("/"+String(storage.moduleId)+ "/" + PARAM_HUMIDITY_TRESHOLD))
   {
     soilHumidityThreshold = data.toInt();
     Serial.println("soilHumidityThreshold");
     Serial.println(data);
   }
 
-  else if (topic == String("/"+String(storage.moduleId)+ PARAM_MANUAL_AUTO_MODE))
+  else if (topic == String("/"+String(storage.moduleId)+ "/" + PARAM_MANUAL_AUTO_MODE))
   {
     autoMode = (data == String("1"));
     Serial.println("Auto mode");
     Serial.println(data);
   }
-  else if (topic == String("/"+String(storage.moduleId)+ PARAM_PUMP_ON))
+  else if (topic == String("/"+String(storage.moduleId)+ "/" + PARAM_PUMP_ON))
   {
     //switchState = (data == String("1"))? true: false;
     if (data == String("1"))
