@@ -311,7 +311,7 @@ bool MQTT::SetParameterIsCommand(uint16_t moduleId, const char* parameterName, b
 {
 	String valueStr1("");
 	valueStr1 = isCommand?"true":"false";
-	_topic  = "/" + String(moduleId) + parameterName + "/IsCommand";
+	_topic  = "/" + String(moduleId) + "/" + parameterName + "/IsCommand";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -321,7 +321,7 @@ bool MQTT::SetParameterDescription(uint16_t moduleId, const char* parameterName,
 {
 	String valueStr1("");
 	valueStr1 = description;
-	_topic  = "/" + String(moduleId) + parameterName + "/Description";
+	_topic  = "/" + String(moduleId) +"/" + parameterName + "/Description";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -332,7 +332,7 @@ bool MQTT::SetParameterUnit(uint16_t moduleId, const char* parameterName, const 
 {
 	String valueStr1("");
 	valueStr1 = unit;
-	_topic  = "/" + String(moduleId) + parameterName + "/Unit";
+	_topic  = "/" + String(moduleId) + "/" + parameterName + "/Unit";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -343,7 +343,7 @@ bool MQTT::SetParameterDBLogging(uint16_t moduleId, const char* parameterName, b
 {
 	String valueStr1("");
 	valueStr1 = dbLogging?"true":"false";
-	_topic  = "/" + String(moduleId) + parameterName + "/DBLogging";
+	_topic  = "/" + String(moduleId) + "/" + parameterName + "/DBLogging";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -353,7 +353,7 @@ bool MQTT::SetParameterChartSteps(uint16_t moduleId, const char* parameterName, 
 {
 	String valueStr1("");
 	valueStr1 = chartSteps?"true":"false";
-	_topic  = "/" + String(moduleId) + parameterName + "/ChartSteps";
+	_topic  = "/" + String(moduleId) + "/" + parameterName + "/ChartSteps";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -363,7 +363,7 @@ bool MQTT::SetParameterUINotifications(uint16_t moduleId, const char* parameterN
 {
 	String valueStr1("");
 	valueStr1 = uiNotifications?"true":"false";
-	_topic  = "/" + String(moduleId) + parameterName + "/UINotifications";
+	_topic  = "/" + String(moduleId) + "/" + parameterName + "/UINotifications";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -374,7 +374,7 @@ bool MQTT::SetParameterDbAvgInterval(uint16_t moduleId, const char* parameterNam
 {
 	String valueStr1("");
 	valueStr1 = String(dbAvgInterval);
-	_topic  = "/" + String(moduleId) + parameterName + "/DbAvgInterval";
+	_topic  = "/" + String(moduleId) + "/" + parameterName + "/DbAvgInterval";
     bool result = publish(_topic, valueStr1);
     delay(100);
 	return  result;
@@ -400,13 +400,3 @@ void MQTT::NewModuleParameter(uint16_t moduleId, const char* parameterName)
 	_parameterName = String("");
 	isNewParameterCmd = false;
 }
-
-
-
-
-
-
-
-
-
-
