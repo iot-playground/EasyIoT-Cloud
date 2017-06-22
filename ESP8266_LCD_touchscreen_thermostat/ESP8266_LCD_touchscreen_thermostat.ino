@@ -191,7 +191,6 @@ int _rec = 0;
 #define PARAM_HEATING       "Sensor.Parameter12" // DI heating 
 #define PARAM_FORECAST      "Sensor.Parameter13" // forecast 
 #define PARAM_TEMP_TARGET   "Sensor.Parameter14" // target temperature
-#define PARAM_ICON          "Settings.Icon1"     // icon
 
 char *days[DAYS_SU + 1] = {
   "All      ", "Weekdays ", "Weekend  ", "Monday   ", "Tuesday  ", "Wednesday", "Thursday ", "Friday   ", "Saturday ", "Sunday   "
@@ -617,22 +616,9 @@ void processComm()
       // konfiguriraj modul - dodaj parametre in nastavitve
       if (configuration.moduleId != 0)
       {
-        strcpy(OutgoingData.data, "MT_GENERIC");
+        strcpy(OutgoingData.data, "MT_THERMOSTAT");
         Serial.println("Send module type");
         OutgoingData.command = CMD_SET_MODULE_TYPE;
-        sendData();
-        delay(DELAY_ADD_PARAM);
-
-        Serial.print("add new parameter ");
-        Serial.println(PARAM_ICON);
-        strcpy(OutgoingData.data, PARAM_ICON);
-        OutgoingData.command = CMD_GET_NEW_PARAMETER;
-        sendData();
-        delay(DELAY_ADD_PARAM);
-
-        CopyValuesToOutgoing(OutgoingData.data, PARAM_ICON, "dimmer.png");
-        Serial.println("set parameter value");
-        OutgoingData.command = CMD_SET_PARAMETER_VALUE;
         sendData();
         delay(DELAY_ADD_PARAM);
 
@@ -768,9 +754,9 @@ void processComm()
         sendData();
         delay(DELAY_ADD_PARAM);
 
-        CopyValuesToOutgoing(OutgoingData.data, PARAM_MODE, "true");
-        Serial.println("set parameter DBLogging");
-        OutgoingData.command = CMD_SET_PARAMETER_DBLOGGING;
+        CopyValuesToOutgoing(OutgoingData.data, PARAM_MODE, "Mode");
+        Serial.println("set parameter description");
+        OutgoingData.command = CMD_SET_PARAMETER_DESCRIPTION;
         sendData();
         delay(DELAY_ADD_PARAM);
 
@@ -788,6 +774,12 @@ void processComm()
         sendData();
         delay(DELAY_ADD_PARAM);
 
+        CopyValuesToOutgoing(OutgoingData.data, PARAM_TEMP_LOLO, "°C");
+        Serial.println("set parameter Unit");
+        OutgoingData.command = CMD_SET_PARAMETER_UNIT;
+        sendData();
+        delay(DELAY_ADD_PARAM);
+
         Serial.print("add new parameter ");
         Serial.println(PARAM_TEMP_LO);
         strcpy(OutgoingData.data, PARAM_TEMP_LO);
@@ -795,10 +787,23 @@ void processComm()
         sendData();
         delay(DELAY_ADD_PARAM);
 
+        CopyValuesToOutgoing(OutgoingData.data, PARAM_TEMP_LO, "°C");
+        Serial.println("set parameter Unit");
+        OutgoingData.command = CMD_SET_PARAMETER_UNIT;
+        sendData();
+        delay(DELAY_ADD_PARAM);
+
+
         Serial.print("add new parameter ");
         Serial.println(PARAM_TEMP_HI);
         strcpy(OutgoingData.data, PARAM_TEMP_HI);
         OutgoingData.command = CMD_GET_NEW_PARAMETER;
+        sendData();
+        delay(DELAY_ADD_PARAM);
+
+        CopyValuesToOutgoing(OutgoingData.data, PARAM_TEMP_HI, "°C");
+        Serial.println("set parameter Unit");
+        OutgoingData.command = CMD_SET_PARAMETER_UNIT;
         sendData();
         delay(DELAY_ADD_PARAM);
 
@@ -808,6 +813,13 @@ void processComm()
         OutgoingData.command = CMD_GET_NEW_PARAMETER;
         sendData();
         delay(DELAY_ADD_PARAM);
+
+        CopyValuesToOutgoing(OutgoingData.data, PARAM_TEMP_HIHI, "°C");
+        Serial.println("set parameter Unit");
+        OutgoingData.command = CMD_SET_PARAMETER_UNIT;
+        sendData();
+        delay(DELAY_ADD_PARAM);
+
 
         ////////////
         Serial.print("add new parameter ");
@@ -834,6 +846,12 @@ void processComm()
         Serial.println(PARAM_FORECAST);
         strcpy(OutgoingData.data, PARAM_FORECAST);
         OutgoingData.command = CMD_GET_NEW_PARAMETER;
+        sendData();
+        delay(DELAY_ADD_PARAM);
+
+        CopyValuesToOutgoing(OutgoingData.data, PARAM_FORECAST, "Forecast");
+        Serial.println("set parameter description");
+        OutgoingData.command = CMD_SET_PARAMETER_DESCRIPTION;
         sendData();
         delay(DELAY_ADD_PARAM);
 
