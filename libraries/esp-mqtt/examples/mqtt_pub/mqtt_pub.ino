@@ -1,11 +1,15 @@
 #include <ESP8266WiFi.h>
 #include <MQTT.h>
 
+void myDataCb(String& topic, String& data);
+void myPublishedCb();
+void myDisconnectedCb();
+void myConnectedCb();
 
 #define CLIENT_ID "client1"
 
 // create MQTT object
-MQTT myMqtt(CLIENT_ID, "192.168.1.50", 1883);
+MQTT myMqtt(CLIENT_ID, "192.168.0.1", 1883);
 
 //
 const char* ssid     = "ssid";
@@ -62,28 +66,32 @@ void loop() {
   // publish value to topic
   boolean result = myMqtt.publish(topic, valueStr);
     
-  delay(100);
+  delay(1000);
 }
 
 
 /*
  * 
  */
-void myConnectedCb() {
+void myConnectedCb()
+{
   Serial.println("connected to MQTT server");
 }
 
-void myDisconnectedCb() {
+void myDisconnectedCb()
+{
   Serial.println("disconnected. try to reconnect...");
   delay(500);
   myMqtt.connect();
 }
 
-void myPublishedCb() {
+void myPublishedCb()
+{
   //Serial.println("published.");
 }
 
-void myDataCb(String& topic, String& data) {
+void myDataCb(String& topic, String& data)
+{
   
   Serial.print(topic);
   Serial.print(": ");

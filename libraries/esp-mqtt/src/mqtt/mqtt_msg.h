@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   mqtt_msg.h
  * Author: Minh Tuan
  *
@@ -6,9 +6,10 @@
  */
 
 #ifndef MQTT_MSG_H
-#define	MQTT_MSG_H
+#define MQTT_MSG_H
+#include "user_config.h"
 #include "c_types.h"
-#ifdef	__cplusplus
+#ifdef  __cplusplus
 extern "C" {
 #endif
 
@@ -42,13 +43,10 @@ extern "C" {
 * POSSIBILITY OF SUCH DAMAGE.
 *
 */
-/* 7			6			5			4			3			2			1			0*/
-/*|      --- Message Type----			|  DUP Flag	|	   QoS Level		|	Retain	|
-/*										Remaining Length								 */
+/* 7      6     5     4     3     2     1     0*/
+/*|      --- Message Type----     |  DUP Flag |    QoS Level    | Retain  |
+/*                    Remaining Length                 */
 
-#define PROTOCOL_NAMEv31	/*MQTT version 3.1 compatible with Mosquitto v0.15*/
-	//PROTOCOL_NAMEv311			/*MQTT version 3.11 compatible with https://eclipse.org/paho/clients/testing/*/
-	
 
 enum mqtt_message_type
 {
@@ -66,6 +64,16 @@ enum mqtt_message_type
   MQTT_MSG_TYPE_PINGREQ = 12,
   MQTT_MSG_TYPE_PINGRESP = 13,
   MQTT_MSG_TYPE_DISCONNECT = 14
+};
+
+enum mqtt_connect_return_code
+{
+  CONNECTION_ACCEPTED = 0,
+  CONNECTION_REFUSE_PROTOCOL,
+  CONNECTION_REFUSE_ID_REJECTED,
+  CONNECTION_REFUSE_SERVER_UNAVAILABLE,
+  CONNECTION_REFUSE_BAD_USERNAME,
+  CONNECTION_REFUSE_NOT_AUTHORIZED
 };
 
 typedef struct mqtt_message
@@ -92,7 +100,7 @@ typedef struct mqtt_connect_info
   char* password;
   char* will_topic;
   char* will_message;
-  int keepalive;
+  uint32_t keepalive;
   int will_qos;
   int will_retain;
   int clean_session;
@@ -101,6 +109,7 @@ typedef struct mqtt_connect_info
 
 
 static inline int ICACHE_FLASH_ATTR mqtt_get_type(uint8_t* buffer) { return (buffer[0] & 0xf0) >> 4; }
+static inline int ICACHE_FLASH_ATTR mqtt_get_connect_return_code(uint8_t* buffer) { return buffer[3]; }
 static inline int ICACHE_FLASH_ATTR mqtt_get_dup(uint8_t* buffer) { return (buffer[0] & 0x08) >> 3; }
 static inline int ICACHE_FLASH_ATTR mqtt_get_qos(uint8_t* buffer) { return (buffer[0] & 0x06) >> 1; }
 static inline int ICACHE_FLASH_ATTR mqtt_get_retain(uint8_t* buffer) { return (buffer[0] & 0x01); }
@@ -124,9 +133,9 @@ mqtt_message_t* ICACHE_FLASH_ATTR mqtt_msg_pingresp(mqtt_connection_t* connectio
 mqtt_message_t* ICACHE_FLASH_ATTR mqtt_msg_disconnect(mqtt_connection_t* connection);
 
 
-#ifdef	__cplusplus
+#ifdef  __cplusplus
 }
 #endif
 
-#endif	/* MQTT_MSG_H */
+#endif  /* MQTT_MSG_H */
 

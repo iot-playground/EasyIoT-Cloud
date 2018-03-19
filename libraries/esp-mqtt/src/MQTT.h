@@ -8,7 +8,6 @@
  *
  *	This library is intended to be used with esp8266 modules.
  *
- *	22.3.2017 - added EasyIoT Cloud helper functions, more http://iot-playground.com
  *
  *  This class wraps a slightly modified version of mqtt
  *	for esp8266 written by Tuan PM.
@@ -36,7 +35,10 @@
 #include <stdarg.h>
 #include <string.h>
 
+#define MQTT_DEBUG_ON
+
 extern "C" {
+	#include <stddef.h>
 	#include "mqtt/mqtt.h"
 }
 
@@ -93,13 +95,18 @@ public:
 	bool SetParameterUINotifications(uint16_t moduleId, const char* parameterName, bool uiNotifications);
 	bool SetParameterDbAvgInterval(uint16_t moduleId, const char* parameterName, uint dbAvgInterval);
 		
+	bool SetParameterValue(uint16_t moduleId, const char* parameterName, const char* value);	
 	
 	void NewModuleParameter(uint16_t moduleId, const char* parameterName);
-
+	
+	void onWaitOk( void (*)(void) );
+	//callback
+	void (*onWaitOkCb)(void);
+	
 private:
 	MQTT_Client mqttClient;
 	
-	bool stepOk1;
+		bool stepOk1;
 	uint16_t _moduleId = 0;
 	String _topic;
 	String _parameterName;
@@ -107,7 +114,6 @@ private:
 	bool isNewParameterCmd;
 	
 	void waitStepOK();
-	
 	
 };
 
