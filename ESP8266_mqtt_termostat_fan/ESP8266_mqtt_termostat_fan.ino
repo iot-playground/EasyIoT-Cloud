@@ -32,7 +32,7 @@
 #define TEMP_HISTERESE  0.25
 
 #define CONFIG_START 0
-#define CONFIG_VERSION "v02"
+#define CONFIG_VERSION "v01"
 
 #define AP_CONNECT_TIME 30 //s
 
