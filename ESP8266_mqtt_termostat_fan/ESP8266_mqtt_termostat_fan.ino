@@ -8,7 +8,6 @@
 #endif
 
 
-
 #include <ESP8266WiFi.h>
 #include <MQTT.h>
 #include <EEPROM.h>
